@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Spring Security for Platform
+  -
+  -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+    <debug/>
+
+    <global-method-security pre-post-annotations="enabled" />
+
+    <http pattern="/jsp/initial/**" security="none"/>
+
+    <http pattern="/static/**" security="none"/> 
+
+
+    <http use-expressions="true">
+    	<intercept-url pattern="jsp/initial/Welcome.jsp" access="permitAll" />
+
+    	<intercept-url pattern="/login" access="permitAll" />
+    	<intercept-url pattern="/register" access="permitAll" />
+    	<intercept-url pattern="/search" access="permitAll" />
+    	<intercept-url pattern="/welcome" access="permitAll" />
+    	<intercept-url pattern="/" access="permitAll"/>
+        <intercept-url pattern="/**" access="isAuthenticated()" />
+        <form-login login-page="/login" default-target-url="/" always-use-default-target="false"
+        	authentication-failure-url = "/login?login_error=1"/>
+        <logout delete-cookies="JSESSIONID" logout-success-url="/login"  />
+        <remember-me/>
+        
+        <session-management> 	
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management>
+
+    </http>
+
+    <beans:bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
+    
+   <authentication-manager>
+    <authentication-provider user-service-ref='hLiteUserDetailsService'/>
+  </authentication-manager>
+  
+  
+  <beans:bean id="hLiteUserDetailsService"
+      class="com.healthElite.service.UserManager">
+  </beans:bean>
+
+
+</beans:beans>
